@@ -1,0 +1,85 @@
+@page
+@model ButcePlatformu.Pages.Harcamalar.IndexModel
+@{
+    ViewData["Title"] = "Harcamalar";
+}
+
+<h2 class="mb-3">Harcama Yönetimi & EXIF Fiş Temizleme</h2>
+
+@if (!string.IsNullOrEmpty(Model.BilgiMesaji))
+{
+    <div class="alert alert-success">@Model.BilgiMesaji</div>
+}
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-dark text-white">Yeni Harcama Ekle</div>
+    <div class="card-body">
+        <form method="post" asp-page-handler="Ekle" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="YeniHarcama.Baslik" class="form-label"></label>
+                    <input asp-for="YeniHarcama.Baslik" class="form-control" placeholder="Örn: Migros Market" />
+                    <span asp-validation-for="YeniHarcama.Baslik" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="YeniHarcama.Tutar" class="form-label"></label>
+                    <input asp-for="YeniHarcama.Tutar" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="YeniHarcama.Tutar" class="text-danger small"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="YeniHarcama.KategoriId" class="form-label"></label>
+                    <select asp-for="YeniHarcama.KategoriId" asp-items="Model.KategoriListesi" class="form-select"></select>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="YeniHarcama.Tarih" class="form-label"></label>
+                    <input asp-for="YeniHarcama.Tarih" class="form-control" type="date" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Fiş Görseli (EXIF Temizlenir)</label>
+                    <input asp-for="FisDosyasi" type="file" accept="image/*" class="form-control" />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
+        </form>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Tarih</th>
+            <th>Başlık</th>
+            <th>Kategori</th>
+            <th>Tutar</th>
+            <th>Fiş & Gizlilik</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var h in Model.Harcamalar)
+        {
+            <tr>
+                <td>@h.Tarih.ToString("dd.MM.yyyy")</td>
+                <td>@h.Baslik</td>
+                <td>@(h.Kategori?.Ad ?? "Diğer")</td>
+                <td class="fw-bold">@h.Tutar.ToString("N2") TL</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(h.FisGorselYolu))
+                    {
+                        <a href="@h.FisGorselYolu" target="_blank" class="btn btn-sm btn-outline-success">Temiz Fişi Gör</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted small">Yok</span>
+                    }
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="Sil" asp-route-id="@h.Id" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

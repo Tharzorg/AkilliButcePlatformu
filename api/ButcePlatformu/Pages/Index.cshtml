@@ -1,0 +1,76 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Bütçe Özeti";
+}
+
+<h2 class="mb-4">Akıllı Bütçe & Finans Yönetim Paneli</h2>
+
+@if (Model.YaklasanAbonelikler.Any())
+{
+    <div class="alert alert-warning border-warning shadow-sm">
+        <h5 class="alert-heading fw-bold">Yaklaşan Abonelik Ödemeleri!</h5>
+        <ul class="mb-0">
+            @foreach (var ab in Model.YaklasanAbonelikler)
+            {
+                <li>
+                    <strong>@ab.HizmetAdi</strong> (@ab.AylikTutar.ToString("N2") TL) ödemesine
+                    <span class="badge bg-danger">@ab.KalanGunHesapla() gün kaldı</span>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card text-bg-primary shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">Toplam Kayıtlı Harcama</h6>
+                <h3 class="fw-bold">@Model.ToplamHarcama.ToString("N2") TL</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-bg-dark shadow-sm">
+            <div class="card-body">
+                <h6 class="card-title">Aylık Sabit Abonelik Yükü</h6>
+                <h3 class="fw-bold">@Model.AylikAbonelikToplami.ToString("N2") TL</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Son 5 Harcama</h4>
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Tarih</th>
+            <th>Başlık</th>
+            <th>Kategori</th>
+            <th>EXIF Gizlilik</th>
+            <th>Tutar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var h in Model.SonHarcamalar)
+        {
+            <tr>
+                <td>@h.Tarih.ToString("dd.MM.yyyy")</td>
+                <td>@h.Baslik</td>
+                <td>@(h.Kategori?.Ad ?? "Diğer")</td>
+                <td>
+                    @if (h.ExifTemizlendiMi)
+                    {
+                        <span class="badge bg-success">EXIF Temizlendi</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Görsel Yok</span>
+                    }
+                </td>
+                <td class="fw-bold">@h.Tutar.ToString("N2") TL</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,29 @@
+@page
+@model ButcePlatformu.Pages.Yonetim.DenetimIzleriModel
+@{
+    ViewData["Title"] = "Denetim İzleri";
+}
+
+<h2 class="mb-3">Sistem Güvenlik & EXIF Denetim İzleri (Admin)</h2>
+
+<table class="table table-sm table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Tarih / Saat</th>
+            <th>Kullanıcı</th>
+            <th>İşlem Türü</th>
+            <th>Detay</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var k in Model.Kayitlar)
+        {
+            <tr>
+                <td>@k.IslemTarihi.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                <td>@k.KullaniciEposta</td>
+                <td><span class="badge bg-info text-dark">@k.IslemTuru</span></td>
+                <td>@k.Detay</td>
+            </tr>
+        }
+    </tbody>
+</table>
